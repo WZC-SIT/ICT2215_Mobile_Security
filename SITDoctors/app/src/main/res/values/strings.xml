@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SITDoctors</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="login">Login</string>
+    <string name="email" />
+    <string name="Password" />
+    <string name="Email">Email\n</string>
+    <string name="password">Password\n</string>
+    <string name="register">Register\n</string>
+    <string name="click_to_login">Click to Login</string>
+    <string name="click_to_register">Click to register</string>
+    <string name="logout">LOGOUT\n</string>
+</resources>

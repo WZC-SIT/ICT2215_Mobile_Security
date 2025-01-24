@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "700355097588",
+    "project_id": "sitdoctors",
+    "storage_bucket": "sitdoctors.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700355097588:android:10666da1236dcc7ef87fa1",
+        "android_client_info": {
+          "package_name": "com.example.sitdoctors"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDEOSoY75l5DEI5rN1TOO-P0BisXoZvJo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
