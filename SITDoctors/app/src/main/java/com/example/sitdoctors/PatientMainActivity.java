@@ -14,13 +14,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.sitdoctors.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity {
+public class PatientMainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
     FirebaseAuth auth;
     FirebaseUser user;
     TextView userDetails;
@@ -29,9 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.activity_patient_main);
 
         // Initialize Firebase Auth and check the current user
         auth = FirebaseAuth.getInstance();
@@ -50,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the email of the current user in the TextView
         if (user != null && user.getEmail() != null) {
-            userDetails.setText("Logged in as: " + user.getEmail());
+            userDetails.setText("Logged in as Patient: " + user.getEmail());
         }
 
         // Set up logout button functionality
@@ -73,6 +69,6 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(binding.navView, navController);
+        NavigationUI.setupWithNavController(navView, navController);
     }
 }
