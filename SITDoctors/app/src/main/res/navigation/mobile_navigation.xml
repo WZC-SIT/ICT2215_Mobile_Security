@@ -22,4 +22,16 @@
         android:name="com.example.sitdoctors.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.sitdoctors.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <action
+        android:id="@+id/action_notificationFragment_to_profileFragment"
+        app:destination="@id/profileFragment" />
+
+
 </navigation>

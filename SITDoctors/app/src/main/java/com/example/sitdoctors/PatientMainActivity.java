@@ -21,7 +21,7 @@ public class PatientMainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     FirebaseUser user;
-    TextView userDetails;
+
     Button logoutButton;
 
     @Override
@@ -41,13 +41,9 @@ public class PatientMainActivity extends AppCompatActivity {
         }
 
         // Initialize UI components
-        userDetails = findViewById(R.id.user_details);
         logoutButton = findViewById(R.id.logout);
 
-        // Set the email of the current user in the TextView
-        if (user != null && user.getEmail() != null) {
-            userDetails.setText("Logged in as Patient: " + user.getEmail());
-        }
+
 
         // Set up logout button functionality
         logoutButton.setOnClickListener(new View.OnClickListener() {
