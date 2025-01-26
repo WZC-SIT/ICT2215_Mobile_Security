@@ -2,9 +2,6 @@ package com.example.sitdoctors;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -22,8 +19,6 @@ public class PatientMainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseUser user;
 
-    Button logoutButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,24 +34,6 @@ public class PatientMainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
-        // Initialize UI components
-        logoutButton = findViewById(R.id.logout);
-
-
-
-        // Set up logout button functionality
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Log out the user
-                auth.signOut();
-                // Redirect to the Login activity
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         // Initialize Bottom Navigation
         BottomNavigationView navView = findViewById(R.id.nav_view);

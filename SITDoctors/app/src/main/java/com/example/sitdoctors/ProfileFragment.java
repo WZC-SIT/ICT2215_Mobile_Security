@@ -1,5 +1,6 @@
 package com.example.sitdoctors;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +21,8 @@ public class ProfileFragment extends Fragment {
     // UI components
     private EditText etProfileName, etProfileAge, etProfilePhone, etProfileAddress;
     private TextView tvProfileEmail;  // Email is now displayed as TextView
-    private Button btnSaveProfile;
-    Button logoutButton;
+    private Button btnSaveProfile, logoutButton;
+
     // Firebase instances
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
@@ -44,12 +45,24 @@ public class ProfileFragment extends Fragment {
         etProfileAddress = root.findViewById(R.id.etProfileAddress);
         tvProfileEmail = root.findViewById(R.id.tvProfileEmail);  // Initialize TextView for email
         btnSaveProfile = root.findViewById(R.id.btnSaveProfile);
+        logoutButton = root.findViewById(R.id.logoutButton);  // Initialize logout button
 
         // Load user data from Firebase
         loadUserData();
 
         // Save Changes when button is clicked
         btnSaveProfile.setOnClickListener(v -> saveUserData());
+
+        // Handle Logout
+        logoutButton.setOnClickListener(v -> {
+            // Sign out the user
+            FirebaseAuth.getInstance().signOut();
+
+            // Redirect to the Login activity
+            Intent intent = new Intent(getActivity(), Login.class);
+            startActivity(intent);
+            getActivity().finish();  // Close the current activity
+        });
 
         return root;
     }
