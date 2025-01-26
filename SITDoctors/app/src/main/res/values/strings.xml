@@ -4,12 +4,17 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="login">Login</string>
-    <string name="email" />
-    <string name="Password" />
-    <string name="Email">Email\n</string>
-    <string name="password">Password\n</string>
-    <string name="register">Register\n</string>
+    <string name="email">Email</string>
+    <string name="Email">Email</string> <!-- Added to match the layout reference -->
+    <string name="password">Password</string>
+    <string name="register">Register</string>
     <string name="click_to_login">Click to Login</string>
-    <string name="click_to_register">Click to register</string>
-    <string name="logout">LOGOUT\n</string>
+    <string name="click_to_register">Click to Register</string>
+    <string name="logout">Logout</string>
+
+    <!-- Added missing string resources -->
+    <string name="name">Name</string>
+    <string name="age">Age</string>
+    <string name="phone">Phone Number</string>
+    <string name="address">Address</string>
 </resources>

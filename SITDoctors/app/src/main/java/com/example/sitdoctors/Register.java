@@ -23,7 +23,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class Register extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
+    TextInputEditText editTextEmail, editTextPassword, editTextName, editTextAge, editTextPhone, editTextAddress;
     Button buttonReg;
     FirebaseAuth mAuth;
     ProgressBar progressBar;
@@ -38,6 +38,10 @@ public class Register extends AppCompatActivity {
         // Initialize views
         editTextEmail = findViewById(R.id.Email);
         editTextPassword = findViewById(R.id.Password);
+        editTextName = findViewById(R.id.Name);
+        editTextAge = findViewById(R.id.Age);
+        editTextPhone = findViewById(R.id.Phone);
+        editTextAddress = findViewById(R.id.Address);
         buttonReg = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.loginNow);
@@ -62,6 +66,10 @@ public class Register extends AppCompatActivity {
                 progressBar.setVisibility(View.VISIBLE);
                 String email = String.valueOf(editTextEmail.getText());
                 String password = String.valueOf(editTextPassword.getText());
+                String name = String.valueOf(editTextName.getText());
+                String age = String.valueOf(editTextAge.getText());
+                String phone = String.valueOf(editTextPhone.getText());
+                String address = String.valueOf(editTextAddress.getText());
 
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(Register.this, "Enter Email", Toast.LENGTH_SHORT).show();
@@ -73,7 +81,28 @@ public class Register extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(Register.this, "Enter Name", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+                if (TextUtils.isEmpty(age)) {
+                    Toast.makeText(Register.this, "Enter Age", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+                if (TextUtils.isEmpty(phone)) {
+                    Toast.makeText(Register.this, "Enter Phone Number", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
+                if (TextUtils.isEmpty(address)) {
+                    Toast.makeText(Register.this, "Enter Address", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    return;
+                }
 
+                // Registration with Firebase Auth
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
