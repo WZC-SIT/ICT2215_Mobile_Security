@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
+        android:id="@+id/navigation_chatbot"
+        android:name="com.example.sitdoctors.ui.chatbot.ChatbotFragment"
+        android:label="Chatbot"
+        tools:layout="@layout/fragment_chatbot" />
+
+    <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.sitdoctors.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"

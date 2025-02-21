@@ -49,7 +49,9 @@
         <activity
             android:name=".PatientMainActivity"
             android:exported="true"
-            android:label="Patient Main Activity" />
+            android:label="Patient Main Activity"
+            android:windowSoftInputMode="adjustResize"/>
+
 
     </application>
 
