@@ -47,16 +47,23 @@ public class ChatbotFragment extends Fragment {
     private void sendMessage() {
         String userMessage = messageInput.getText().toString().trim();
         if (!userMessage.isEmpty()) {
-            // Add the new message at the **end** of the list
+            // Add user's message to chat
             chatMessages.add(new ChatMessage(userMessage, true));
             chatAdapter.notifyItemInserted(chatMessages.size() - 1);
-
-            // Scroll to the latest message
             chatRecyclerView.scrollToPosition(chatMessages.size() - 1);
-
-            // Clear input field
             messageInput.setText("");
+
+            // Fetch AI response
+            new Thread(() -> {
+                String botResponse = OpenAIService.getAIResponse(userMessage);
+                getActivity().runOnUiThread(() -> {
+                    chatMessages.add(new ChatMessage(botResponse, false));
+                    chatAdapter.notifyItemInserted(chatMessages.size() - 1);
+                    chatRecyclerView.scrollToPosition(chatMessages.size() - 1);
+                });
+            }).start();
         }
     }
+
 
 }
