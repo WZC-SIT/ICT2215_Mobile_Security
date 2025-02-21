@@ -2,7 +2,7 @@
     <string name="app_name">SITDoctors</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_contacts">Contacts</string>
     <string name="login">Login</string>
     <string name="email">Email</string>
     <string name="Email">Email</string> <!-- Added to match the layout reference -->
@@ -11,7 +11,7 @@
     <string name="click_to_login">Click to Login</string>
     <string name="click_to_register">Click to Register</string>
     <string name="logout">Logout</string>
-
+    <string name="doctor_name">Doctor Name</string>
     <!-- Added missing string resources -->
     <string name="name">Name</string>
     <string name="age">Age</string>

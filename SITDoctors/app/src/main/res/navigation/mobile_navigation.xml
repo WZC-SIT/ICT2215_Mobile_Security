@@ -24,10 +24,10 @@
         tools:layout="@layout/fragment_chatbot" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.sitdoctors.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_contacts"
+        android:name="com.example.sitdoctors.ui.contacts.ContactsFragment"
+        android:label="@string/title_contacts"
+        tools:layout="@layout/fragment_contacts" />
 
     <fragment
         android:id="@+id/profileFragment"
