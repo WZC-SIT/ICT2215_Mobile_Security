@@ -55,19 +55,13 @@
 
         <activity
             android:name=".ui.appointments.ManageAppointmentsActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-<<<<<<< Updated upstream
         <activity
-            android:name=".ui.appointments.AppointmentOverviewActivity"/>
+            android:name=".ui.appointments.AppointmentOverviewActivity" />
 
-
-
-
-=======
-        <activity android:name=".PatientChatActivity" />
->>>>>>> Stashed changes
-
+        <activity
+            android:name=".PatientChatActivity" />
 
     </application>
 
