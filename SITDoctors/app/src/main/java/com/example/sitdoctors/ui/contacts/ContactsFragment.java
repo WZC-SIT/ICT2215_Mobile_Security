@@ -10,6 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent;
+
+
+import com.example.sitdoctors.PatientChatActivity;
 import com.example.sitdoctors.databinding.FragmentContactsBinding;
 import java.util.ArrayList;
 import com.example.sitdoctors.R;
@@ -18,8 +22,7 @@ import java.util.List;
 public class ContactsFragment extends Fragment {
 
     private FragmentContactsBinding binding;
-    private RecyclerView contactsRecyclerView;
-    private ContactsAdapter contactsAdapter;
+
     private List<String> contactsList;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -40,13 +43,21 @@ public class ContactsFragment extends Fragment {
         contactsList.add("Dr. Adam");
         contactsList.add("Dr. Cassandra");
 
-        contactsRecyclerView = binding.getRoot().findViewById(R.id.contactsRecyclerView);
-        contactsAdapter = new ContactsAdapter(contactsList, position -> {
+        RecyclerView contactsRecyclerView = binding.getRoot().findViewById(R.id.contactsRecyclerView);
+        ContactsAdapter contactsAdapter = new ContactsAdapter(contactsList, position -> {
             String selectedDoctor = contactsList.get(position);
             Toast.makeText(getContext(), "Chatting with " + selectedDoctor, Toast.LENGTH_SHORT).show();
-            // Logic for starting a chat with the selected doctor
-        });
 
+            // Add the try-catch block here to catch potential errors
+            try {
+                Intent intent = new Intent(getActivity(), PatientChatActivity.class);
+                intent.putExtra("doctor_name", selectedDoctor);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "An error occurred: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
         contactsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         contactsRecyclerView.setAdapter(contactsAdapter);
 
@@ -56,6 +67,6 @@ public class ContactsFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        binding = null;  // Ensure binding is null to avoid memory leaks
     }
 }
