@@ -1,15 +1,15 @@
 package com.example.sitdoctors.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
+import com.example.sitdoctors.R;
+import com.example.sitdoctors.ui.appointments.ManageAppointmentsActivity;
 import com.example.sitdoctors.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -18,14 +18,16 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        // Find the Appointments CardView and set click listener
+        CardView cardAppointments = root.findViewById(R.id.card_appointments);
+        cardAppointments.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ManageAppointmentsActivity.class);
+            startActivity(intent);
+        });
+
         return root;
     }
 

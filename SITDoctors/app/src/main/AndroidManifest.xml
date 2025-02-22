@@ -53,6 +53,12 @@
             android:windowSoftInputMode="adjustResize"/>
 
 
+        <activity
+            android:name=".ui.appointments.ManageAppointmentsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+
+
     </application>
 
 </manifest>
