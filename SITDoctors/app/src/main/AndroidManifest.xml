@@ -57,6 +57,12 @@
             android:name=".ui.appointments.ManageAppointmentsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
+        <activity
+            android:name=".ui.appointments.AppointmentOverviewActivity"/>
+
+
+
+
 
 
     </application>

@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import com.example.sitdoctors.R;
+import com.example.sitdoctors.ui.appointments.AppointmentOverviewActivity;
 import com.example.sitdoctors.ui.appointments.ManageAppointmentsActivity;
 import com.example.sitdoctors.databinding.FragmentHomeBinding;
 
@@ -24,7 +25,7 @@ public class HomeFragment extends Fragment {
         // Find the Appointments CardView and set click listener
         CardView cardAppointments = root.findViewById(R.id.card_appointments);
         cardAppointments.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), ManageAppointmentsActivity.class);
+            Intent intent = new Intent(getActivity(), AppointmentOverviewActivity.class);
             startActivity(intent);
         });
 

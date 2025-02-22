@@ -37,12 +37,13 @@ public class ManageAppointmentsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_appointments);
 
-        // Set up Toolbar
+        // Set up Toolbar with "New Appointment" title
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("New Appointment");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Manage Appointments");
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
         // Initialize Firebase
