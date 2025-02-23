@@ -54,7 +54,7 @@ public class AcceptedAppointmentsFragment extends Fragment {
     private void loadAcceptedAppointments() {
         String currentDoctorId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Get logged-in doctor ID
 
-        appointmentsRef.addValueEventListener(new ValueEventListener() {
+        appointmentsRef.addValueEventListener(new ValueEventListener() { // ✅ Use `addValueEventListener()` for real-time updates
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 appointmentList.clear();
@@ -73,7 +73,7 @@ public class AcceptedAppointmentsFragment extends Fragment {
                     }
                 }
 
-                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged(); // ✅ Ensure UI updates with new data
             }
 
             @Override
@@ -82,6 +82,7 @@ public class AcceptedAppointmentsFragment extends Fragment {
             }
         });
     }
+
 
 
 

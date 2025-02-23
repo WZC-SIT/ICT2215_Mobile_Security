@@ -44,15 +44,24 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
         holder.tvReason.setText("Reason: " + appointment.getReason());
         holder.tvStatus.setText("Status: " + appointment.getStatus());
 
+        // ✅ Hide "Accept" button if the appointment is already accepted
         if ("Accepted".equals(appointment.getStatus())) {
             holder.btnAccept.setVisibility(View.GONE);
         } else {
             holder.btnAccept.setVisibility(View.VISIBLE);
         }
 
+        // ✅ Hide "Reject" button in Pending tab
+        if ("Pending".equals(appointment.getStatus())) {
+            holder.btnReject.setVisibility(View.GONE);
+        } else {
+            holder.btnReject.setVisibility(View.VISIBLE);
+        }
+
         holder.btnAccept.setOnClickListener(v -> updateAppointmentStatus(appointment, "Accepted"));
-        holder.btnReject.setOnClickListener(v -> updateAppointmentStatus(appointment, "Rejected"));
+        holder.btnReject.setOnClickListener(v -> updateAppointmentStatus(appointment, "Pending")); // 🔹 Move to Pending if rejected
     }
+
 
 
     private void updateAppointmentStatus(DoctorAppointment appointment, String newStatus) {
@@ -61,15 +70,12 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
             return;
         }
 
-        // Get the currently logged-in doctor's UID
         String doctorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // Reference to the Firebase "users" table
-        DatabaseReference usersRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
+        DatabaseReference usersRef = FirebaseDatabase.getInstance()
                 .getReference("users").child(doctorId);
 
-
-        // Fetch the doctor's details
+        // ✅ Fetch the doctor's details from Firebase before updating
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -77,23 +83,37 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
                     String doctorName = snapshot.child("name").getValue(String.class);
                     String doctorEmail = snapshot.child("email").getValue(String.class);
 
-                    // Create an update map
                     Map<String, Object> updateMap = new HashMap<>();
                     updateMap.put("status", newStatus);
 
+                    // ✅ If status is "Accepted", add doctor details
                     if ("Accepted".equals(newStatus)) {
-                        updateMap.put("doctorId", doctorId);
-                        updateMap.put("doctorEmail", doctorEmail);
-                        updateMap.put("doctorName", doctorName);
+                        if (doctorId != null && doctorName != null && doctorEmail != null) {
+                            updateMap.put("doctorId", doctorId);
+                            updateMap.put("doctorEmail", doctorEmail);
+                            updateMap.put("doctorName", doctorName);
+                        } else {
+                            Toast.makeText(viewPager.getContext(), "Doctor details missing!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    } else if ("Pending".equals(newStatus)) {
+                        // ✅ If moved back to Pending, remove doctor details
+                        updateMap.put("doctorId", null);
+                        updateMap.put("doctorEmail", null);
+                        updateMap.put("doctorName", null);
                     }
 
-                    // Update the appointment in Firebase
+                    // ✅ Update the appointment in Firebase
                     appointmentsRef.child(appointment.getUserId()).child(appointment.getId())
                             .updateChildren(updateMap)
                             .addOnSuccessListener(aVoid -> {
-                                Toast.makeText(viewPager.getContext(), "Appointment marked as " + newStatus, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(viewPager.getContext(), "Appointment moved to " + newStatus, Toast.LENGTH_SHORT).show();
+
+                                // ✅ Move to the correct tab after updating
                                 if ("Accepted".equals(newStatus)) {
-                                    viewPager.setCurrentItem(1); // Move to Accepted tab
+                                    viewPager.setCurrentItem(1); // Switch to Accepted tab
+                                } else if ("Pending".equals(newStatus)) {
+                                    viewPager.setCurrentItem(0); // Switch to Pending tab
                                 }
                             })
                             .addOnFailureListener(e -> {
@@ -110,6 +130,9 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
             }
         });
     }
+
+
+
 
     @Override
     public int getItemCount() {
