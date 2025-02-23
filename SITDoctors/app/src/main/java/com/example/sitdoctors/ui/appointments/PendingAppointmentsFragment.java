@@ -15,6 +15,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class PendingAppointmentsFragment extends Fragment {
 
@@ -45,22 +48,56 @@ public class PendingAppointmentsFragment extends Fragment {
 
 
     private void loadPendingAppointments() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        // Get today's date
+        Calendar calendar = Calendar.getInstance();
+        String todayDateStr = dateFormat.format(calendar.getTime());
+
+        Date todayDate;
+        try {
+            todayDate = dateFormat.parse(todayDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
         appointmentsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 appointmentList.clear();
 
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) { // Loop through each user
-                    for (DataSnapshot appointmentSnapshot : userSnapshot.getChildren()) { // Loop through appointments
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot appointmentSnapshot : userSnapshot.getChildren()) {
                         DoctorAppointment appointment = appointmentSnapshot.getValue(DoctorAppointment.class);
+
                         if (appointment != null && "Pending".equals(appointment.getStatus())) {
-                            appointment.setId(appointmentSnapshot.getKey()); // Ensure ID is set
-                            appointmentList.add(appointment);
+                            try {
+                                Date appointmentDate = dateFormat.parse(appointment.getDate());
+
+                                // ✅ Only show pending appointments that are today or in the future
+                                if (appointmentDate != null && !appointmentDate.before(todayDate)) {
+                                    appointment.setId(appointmentSnapshot.getKey()); // Ensure ID is set
+                                    appointmentList.add(appointment);
+                                } else {
+                                    // ✅ Check if userId and appointmentId exist before deleting
+                                    if (appointment.getUserId() != null && appointment.getId() != null) {
+                                        appointmentsRef.child(appointment.getUserId())
+                                                .child(appointment.getId()).removeValue()
+                                                .addOnSuccessListener(aVoid -> System.out.println("Deleted past pending appointment"))
+                                                .addOnFailureListener(e -> System.out.println("Failed to delete past pending appointment"));
+                                    } else {
+                                        System.out.println("Skipping deletion: userId or appointmentId is null");
+                                    }
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
 
-                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged(); // ✅ Refresh UI
             }
 
             @Override
@@ -69,6 +106,8 @@ public class PendingAppointmentsFragment extends Fragment {
             }
         });
     }
+
+
 
 
 }

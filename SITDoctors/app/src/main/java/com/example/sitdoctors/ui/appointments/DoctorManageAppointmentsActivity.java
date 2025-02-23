@@ -55,6 +55,7 @@ public class DoctorManageAppointmentsActivity extends AppCompatActivity {
                     break;
             }
         }).attach();
+
     }
 
 

@@ -22,6 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class AcceptedAppointmentsFragment extends Fragment {
 
@@ -53,27 +56,48 @@ public class AcceptedAppointmentsFragment extends Fragment {
 
     private void loadAcceptedAppointments() {
         String currentDoctorId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // Get logged-in doctor ID
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
-        appointmentsRef.addValueEventListener(new ValueEventListener() { // ✅ Use `addValueEventListener()` for real-time updates
+        // Get today's date
+        Calendar calendar = Calendar.getInstance();
+        String todayDateStr = dateFormat.format(calendar.getTime());
+
+        Date todayDate;
+        try {
+            todayDate = dateFormat.parse(todayDateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        appointmentsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 appointmentList.clear();
 
-                for (DataSnapshot userSnapshot : snapshot.getChildren()) { // Loop through each user
-                    for (DataSnapshot appointmentSnapshot : userSnapshot.getChildren()) { // Loop through their appointments
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot appointmentSnapshot : userSnapshot.getChildren()) {
                         DoctorAppointment appointment = appointmentSnapshot.getValue(DoctorAppointment.class);
 
                         if (appointment != null && "Accepted".equals(appointment.getStatus())) {
-                            // ✅ Only show appointments where the logged-in doctor is the assigned doctor
-                            if (appointment.getDoctorId() != null && appointment.getDoctorId().equals(currentDoctorId)) {
-                                appointment.setId(appointmentSnapshot.getKey()); // Ensure ID is set
-                                appointmentList.add(appointment);
+                            try {
+                                Date appointmentDate = dateFormat.parse(appointment.getDate());
+
+                                // ✅ Only show appointments that are today or in the future
+                                if (appointmentDate != null && !appointmentDate.before(todayDate)) {
+                                    if (appointment.getDoctorId() != null && appointment.getDoctorId().equals(currentDoctorId)) {
+                                        appointment.setId(appointmentSnapshot.getKey()); // Ensure ID is set
+                                        appointmentList.add(appointment);
+                                    }
+                                }
+                            } catch (ParseException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
                 }
 
-                adapter.notifyDataSetChanged(); // ✅ Ensure UI updates with new data
+                adapter.notifyDataSetChanged(); // ✅ Refresh the UI
             }
 
             @Override
@@ -82,8 +106,5 @@ public class AcceptedAppointmentsFragment extends Fragment {
             }
         });
     }
-
-
-
 
 }
