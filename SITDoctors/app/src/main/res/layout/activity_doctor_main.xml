@@ -33,19 +33,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
 
-    <!-- Welcome Message -->
-    <TextView
-        android:id="@+id/welcome_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Welcome, Doctor!"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#0277BD"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--    &lt;!&ndash; Welcome Message &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/welcome_message"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:text="Welcome, Doctor!"-->
+<!--        android:textSize="22sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="#0277BD"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 
 
 

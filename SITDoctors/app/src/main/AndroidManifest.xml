@@ -63,6 +63,10 @@
         <activity
             android:name=".PatientChatActivity" />
 
+        <activity
+            android:name=".ui.appointments.DoctorManageAppointmentsActivity" />
+
+
     </application>
 
 </manifest>
