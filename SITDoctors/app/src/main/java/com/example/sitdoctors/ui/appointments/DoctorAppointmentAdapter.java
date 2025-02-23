@@ -8,23 +8,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.*;
 import com.example.sitdoctors.R;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import androidx.viewpager2.widget.ViewPager2;
 
 public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppointmentAdapter.ViewHolder> {
 
     private final List<DoctorAppointment> appointmentList;
     private final DatabaseReference appointmentsRef;
+    private final ViewPager2 viewPager;
 
-    public DoctorAppointmentAdapter(List<DoctorAppointment> appointmentList) {
+    public DoctorAppointmentAdapter(List<DoctorAppointment> appointmentList, ViewPager2 viewPager) {
         this.appointmentList = appointmentList;
-        this.appointmentsRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
+        this.viewPager = viewPager;
+        this.appointmentsRef = FirebaseDatabase.getInstance()
                 .getReference("appointments");
     }
 
-    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_doctor_appointment, parent, false);
@@ -40,16 +44,71 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
         holder.tvReason.setText("Reason: " + appointment.getReason());
         holder.tvStatus.setText("Status: " + appointment.getStatus());
 
-        holder.btnAccept.setOnClickListener(v -> updateAppointmentStatus(appointment.getId(), "Accepted"));
-        holder.btnReject.setOnClickListener(v -> updateAppointmentStatus(appointment.getId(), "Rejected"));
+        if ("Accepted".equals(appointment.getStatus())) {
+            holder.btnAccept.setVisibility(View.GONE);
+        } else {
+            holder.btnAccept.setVisibility(View.VISIBLE);
+        }
+
+        holder.btnAccept.setOnClickListener(v -> updateAppointmentStatus(appointment, "Accepted"));
+        holder.btnReject.setOnClickListener(v -> updateAppointmentStatus(appointment, "Rejected"));
     }
 
-    private void updateAppointmentStatus(String appointmentId, String status) {
-        appointmentsRef.child(appointmentId).child("status").setValue(status)
-                .addOnSuccessListener(aVoid -> Toast.makeText(appointmentsRef.getDatabase().getApp().getApplicationContext(),
-                        "Updated Successfully", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(appointmentsRef.getDatabase().getApp().getApplicationContext(),
-                        "Update Failed", Toast.LENGTH_SHORT).show());
+
+    private void updateAppointmentStatus(DoctorAppointment appointment, String newStatus) {
+        if (appointment.getId() == null) {
+            Toast.makeText(viewPager.getContext(), "Error: Appointment ID is missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Get the currently logged-in doctor's UID
+        String doctorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Reference to the Firebase "users" table
+        DatabaseReference usersRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
+                .getReference("users").child(doctorId);
+
+
+        // Fetch the doctor's details
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String doctorName = snapshot.child("name").getValue(String.class);
+                    String doctorEmail = snapshot.child("email").getValue(String.class);
+
+                    // Create an update map
+                    Map<String, Object> updateMap = new HashMap<>();
+                    updateMap.put("status", newStatus);
+
+                    if ("Accepted".equals(newStatus)) {
+                        updateMap.put("doctorId", doctorId);
+                        updateMap.put("doctorEmail", doctorEmail);
+                        updateMap.put("doctorName", doctorName);
+                    }
+
+                    // Update the appointment in Firebase
+                    appointmentsRef.child(appointment.getUserId()).child(appointment.getId())
+                            .updateChildren(updateMap)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(viewPager.getContext(), "Appointment marked as " + newStatus, Toast.LENGTH_SHORT).show();
+                                if ("Accepted".equals(newStatus)) {
+                                    viewPager.setCurrentItem(1); // Move to Accepted tab
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(viewPager.getContext(), "Failed to update appointment", Toast.LENGTH_SHORT).show();
+                            });
+                } else {
+                    Toast.makeText(viewPager.getContext(), "Doctor details not found!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(viewPager.getContext(), "Failed to fetch doctor details", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

@@ -14,6 +14,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import androidx.viewpager2.widget.ViewPager2;
+
 
 public class DoctorManageAppointmentsActivity extends AppCompatActivity {
 
@@ -25,27 +29,60 @@ public class DoctorManageAppointmentsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_doctor_manage_appointments); // No toolbar change
+        setContentView(R.layout.activity_doctor_manage_appointments);
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Manage Appointment");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        recyclerView = findViewById(R.id.recyclerViewDoctorAppointments);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        ViewPager2 viewPager = findViewById(R.id.viewPager);
 
-        appointmentList = new ArrayList<>();
-        adapter = new DoctorAppointmentAdapter(appointmentList);
-        recyclerView.setAdapter(adapter);
+        DoctorAppointmentsPagerAdapter pagerAdapter = new DoctorAppointmentsPagerAdapter(this);
+        viewPager.setAdapter(pagerAdapter);
 
-        // ✅ Ensure correct Firebase Database URL
-        appointmentsRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
-                .getReference("appointments");
-
-        loadAppointments();
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText("Pending");
+                    break;
+                case 1:
+                    tab.setText("Accepted");
+                    break;
+                case 2:
+                    tab.setText("Past");
+                    break;
+            }
+        }).attach();
     }
+
+
+
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_doctor_manage_appointments); // No toolbar change
+//
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setTitle("Manage Appointment");
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        }
+//
+//        recyclerView = findViewById(R.id.recyclerViewDoctorAppointments);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//
+//        appointmentList = new ArrayList<>();
+//        adapter = new DoctorAppointmentAdapter(appointmentList);
+//        recyclerView.setAdapter(adapter);
+//
+//        // ✅ Ensure correct Firebase Database URL
+//        appointmentsRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
+//                .getReference("appointments");
+//
+//        loadAppointments();
+//    }
 
     private void loadAppointments() {
         appointmentsRef.addValueEventListener(new ValueEventListener() {
