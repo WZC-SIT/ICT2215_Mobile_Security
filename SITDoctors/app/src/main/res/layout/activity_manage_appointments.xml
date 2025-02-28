@@ -5,91 +5,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Toolbar -->
+    <!-- White Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@android:color/white"
         android:title="New Appointment"
-        android:titleTextColor="@android:color/white"
+        android:titleTextColor="@android:color/black"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Appointment Date Selection -->
-    <TextView
-        android:id="@+id/tv_date_label"
-        android:layout_width="wrap_content"
+    <!-- Content Wrapper with Padding -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Appointment Date:"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
+        android:padding="16dp"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/tv_selected_date"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="No date selected"
-        android:textSize="16sp"
-        android:padding="8dp"
-        android:background="@android:drawable/edit_text"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/tv_date_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <Button
-        android:id="@+id/btn_pick_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Choose Date"
-        android:backgroundTint="?attr/colorAccent"
-        android:textAllCaps="false"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/tv_selected_date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- Appointment Date Selection -->
+        <TextView
+            android:id="@+id/tv_date_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Appointment Date:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
 
-    <!-- Reason for Appointment -->
-    <TextView
-        android:id="@+id/tv_reason_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reason for Appointment:"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btn_pick_date"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/tv_selected_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No date selected"
+            android:textSize="16sp"
+            android:padding="8dp"
+            android:background="@android:drawable/edit_text"
+            android:gravity="center_vertical"/>
 
-    <EditText
-        android:id="@+id/et_reason"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:hint="Enter reason here..."
-        android:background="@android:drawable/edit_text"
-        android:padding="12dp"
-        android:gravity="top"
-        android:inputType="textMultiLine"
-        app:layout_constraintTop_toBottomOf="@id/tv_reason_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/btn_pick_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Date"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_button"/> <!-- Updated button -->
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/btn_submit_appointment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Submit Appointment"
-        android:textAllCaps="false"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/et_reason"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- Reason for Appointment -->
+        <TextView
+            android:id="@+id/tv_reason_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reason for Appointment:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <EditText
+            android:id="@+id/et_reason"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Enter reason here..."
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp"
+            android:gravity="top"
+            android:inputType="textMultiLine"/>
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_submit_appointment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit Appointment"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_button"/> <!-- Updated button -->
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
