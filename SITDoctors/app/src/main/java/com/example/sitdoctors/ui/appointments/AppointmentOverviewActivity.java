@@ -6,10 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.sitdoctors.R;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -19,14 +21,11 @@ import java.util.List;
 
 public class AppointmentOverviewActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private AppointmentAdapter adapter;
-    private List<Appointment> appointmentList;
     private DatabaseReference databaseReference;
     private String userId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.appointment_overview);
 
@@ -36,17 +35,26 @@ public class AppointmentOverviewActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        recyclerView = findViewById(R.id.recyclerView_appointments);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        appointmentList = new ArrayList<>();
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        ViewPager2 viewPager = findViewById(R.id.viewPager);
 
+        // Set up ViewPager Adapter
+        PatientAppointmentsPagerAdapter adapter = new PatientAppointmentsPagerAdapter(this);
+        viewPager.setAdapter(adapter);
+
+        // Connect TabLayout with ViewPager2
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0: tab.setText("Pending"); break;
+                case 1: tab.setText("Upcoming"); break;
+                case 2: tab.setText("Past"); break;
+            }
+        }).attach();
+
+        // Firebase setup
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            userId = user.getUid(); // Get user ID
-
-            adapter = new AppointmentAdapter(AppointmentOverviewActivity.this, appointmentList, userId); // Correct parameters
-            recyclerView.setAdapter(adapter);
-
+            userId = user.getUid();
             databaseReference = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
                     .getReference("appointments")
                     .child(userId);
@@ -54,22 +62,25 @@ public class AppointmentOverviewActivity extends AppCompatActivity {
             fetchAppointments(); // Fetch appointments
         }
 
+        // Button for creating a new appointment
         Button btnCreateAppointment = findViewById(R.id.btn_create_appointment);
-        btnCreateAppointment.setOnClickListener(view -> startActivity(new Intent(AppointmentOverviewActivity.this, ManageAppointmentsActivity.class)));
+        btnCreateAppointment.setOnClickListener(view ->
+                startActivity(new Intent(AppointmentOverviewActivity.this, ManageAppointmentsActivity.class))
+        );
     }
 
     private void fetchAppointments() {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                appointmentList.clear();
+                List<Appointment> appointmentList = new ArrayList<>();
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Appointment appointment = data.getValue(Appointment.class);
                     if (appointment != null) {
                         appointmentList.add(appointment);
                     }
                 }
-                adapter.notifyDataSetChanged();
+                Log.d("Firebase", "Fetched " + appointmentList.size() + " appointments.");
             }
 
             @Override

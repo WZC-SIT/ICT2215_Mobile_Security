@@ -48,7 +48,7 @@ public class DoctorManageAppointmentsActivity extends AppCompatActivity {
                     tab.setText("Pending");
                     break;
                 case 1:
-                    tab.setText("Accepted");
+                    tab.setText("Upcoming");
                     break;
                 case 2:
                     tab.setText("Past");
@@ -78,7 +78,6 @@ public class DoctorManageAppointmentsActivity extends AppCompatActivity {
 //        adapter = new DoctorAppointmentAdapter(appointmentList);
 //        recyclerView.setAdapter(adapter);
 //
-//        // ✅ Ensure correct Firebase Database URL
 //        appointmentsRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
 //                .getReference("appointments");
 //

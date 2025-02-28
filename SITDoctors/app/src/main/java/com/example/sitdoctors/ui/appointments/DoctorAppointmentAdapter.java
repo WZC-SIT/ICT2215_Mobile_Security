@@ -15,6 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import androidx.viewpager2.widget.ViewPager2;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 
 public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppointmentAdapter.ViewHolder> {
 
@@ -56,6 +62,24 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
             holder.btnReject.setVisibility(View.GONE);
         } else {
             holder.btnReject.setVisibility(View.VISIBLE);
+        }
+
+        // ✅ Hide "Reject" button in the Pending tab and Past tab
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Calendar calendar = Calendar.getInstance();
+        String todayDateStr = dateFormat.format(calendar.getTime());
+
+        try {
+            Date todayDate = dateFormat.parse(todayDateStr);
+            Date appointmentDate = dateFormat.parse(appointment.getDate());
+
+            if ("Pending".equals(appointment.getStatus()) || (appointmentDate != null && appointmentDate.before(todayDate))) {
+                holder.btnReject.setVisibility(View.GONE); // ✅ Hide for Pending and Past appointments
+            } else {
+                holder.btnReject.setVisibility(View.VISIBLE); // ✅ Show for Accepted appointments
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         holder.btnAccept.setOnClickListener(v -> updateAppointmentStatus(appointment, "Accepted"));

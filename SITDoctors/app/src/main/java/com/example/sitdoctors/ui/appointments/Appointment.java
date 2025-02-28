@@ -21,4 +21,12 @@ public class Appointment {
     public String getDate() { return date; }
     public String getReason() { return reason; }
     public String getStatus() { return status; }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

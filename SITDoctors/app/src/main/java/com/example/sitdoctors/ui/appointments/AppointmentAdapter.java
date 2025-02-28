@@ -44,7 +44,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.tvReason.setText("Reason: " + appointment.getReason());
         holder.tvStatus.setText("Status: " + appointment.getStatus());
 
-        // Delete button logic with confirmation dialog
+        // 🔹 Hide Delete button for Past Appointments
+        if ("Past".equals(appointment.getStatus())) {
+            holder.btnDelete.setVisibility(View.GONE);
+        } else {
+            holder.btnDelete.setVisibility(View.VISIBLE);
+        }
+
+        // ✅ Delete button logic for Pending and Accepted Appointments
         holder.btnDelete.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("Delete Appointment?")
@@ -70,6 +77,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     .show();
         });
     }
+
 
     @Override
     public int getItemCount() {
