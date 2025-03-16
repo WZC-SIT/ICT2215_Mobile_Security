@@ -30,6 +30,12 @@
         tools:layout="@layout/fragment_contacts" />
 
     <fragment
+        android:id="@+id/navigation_contacts_doctors"
+        android:name="com.example.sitdoctors.ui.contacts.DoctorContactFragment"
+        android:label="@string/title_contacts"
+        tools:layout="@layout/fragment_doctor_contact" />
+
+    <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.sitdoctors.ProfileFragment"
         android:label="Profile"
