@@ -22,6 +22,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import android.content.Intent;
+import androidx.cardview.widget.CardView;
+import com.example.sitdoctors.ui.nearbyClinics.NearbyClinicsActivity;
+
 public class HomeFragment extends Fragment {
 
     private FirebaseAuth auth;
@@ -47,6 +51,13 @@ public class HomeFragment extends Fragment {
 
         // Fetch user role first, then allow navigation
         fetchUserRole(cardAppointments);
+
+        // Find the card and set click listener
+        CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
+        findClinicsCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }

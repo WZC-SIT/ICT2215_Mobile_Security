@@ -56,7 +56,7 @@
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:layout_marginTop="8dp"
-            android:background="@drawable/rounded_button"/> <!-- Updated button -->
+            android:background="@drawable/rounded_button"/>
 
         <!-- Reason for Appointment -->
         <TextView
@@ -87,7 +87,7 @@
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_button"/> <!-- Updated button -->
+            android:background="@drawable/rounded_button"/>
 
     </LinearLayout>
 
