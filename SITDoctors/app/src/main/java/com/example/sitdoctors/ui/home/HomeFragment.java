@@ -51,7 +51,10 @@ public class HomeFragment extends Fragment {
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <<<<<<< HEAD
@@ -63,6 +66,9 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
 =======
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -72,6 +78,10 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
 =======
 >>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
 >>>>>>> Stashed changes

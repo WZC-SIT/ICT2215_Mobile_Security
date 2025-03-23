@@ -49,9 +49,12 @@
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <androidx.cardview.widget.CardView
         android:id="@+id/card_find_clinics"
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <<<<<<< HEAD
@@ -63,6 +66,9 @@
         android:id="@+id/card_find_clinics"
 >>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -72,8 +78,11 @@
         android:layout_marginEnd="16dp"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         android:layout_marginTop="16dp"
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <<<<<<< HEAD
@@ -82,6 +91,9 @@
         android:layout_marginTop="16dp"
 >>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -91,10 +103,13 @@
         app:layout_constraintStart_toStartOf="parent"
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         app:layout_constraintEnd_toEndOf="parent"
         android:clickable="true"
         android:foreground="?attr/selectableItemBackground">
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <<<<<<< HEAD
@@ -105,6 +120,9 @@
         android:foreground="?attr/selectableItemBackground">
 >>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -118,7 +136,10 @@
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 <<<<<<< HEAD
@@ -144,6 +165,9 @@
 
 =======
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -170,6 +194,10 @@
 
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
 =======
 >>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
 >>>>>>> Stashed changes

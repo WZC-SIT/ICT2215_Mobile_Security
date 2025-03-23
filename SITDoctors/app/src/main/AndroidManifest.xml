@@ -84,12 +84,15 @@
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
         <activity
             android:name=".ui.nearbyClinics.NearbyClinicsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 
