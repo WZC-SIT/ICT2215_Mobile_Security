@@ -50,7 +50,10 @@ public class HomeFragment extends Fragment {
         fetchUserRole(cardAppointments);
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 <<<<<<< HEAD
         // ✅ Find the Chat CardView
         CardView cardChat = root.findViewById(R.id.card_chat);
@@ -59,12 +62,19 @@ public class HomeFragment extends Fragment {
         cardChat.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
 =======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         // Find the card and set click listener
         CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
         findClinicsCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
 =======
 >>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
 >>>>>>> Stashed changes
