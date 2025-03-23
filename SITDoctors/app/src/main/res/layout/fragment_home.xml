@@ -14,53 +14,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <!-- Appointment Icon -->
-        <ImageView
-            android:id="@+id/icon_appointment"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_calendar"
-        android:contentDescription="Appointment Icon"
-        android:layout_marginEnd="8dp"/>
-
-        <!-- Appointment Text -->
-        <TextView
-            android:id="@+id/tv_appointments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Appointments"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
-    </LinearLayout>
-</androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_find_clinics"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp"
-        app:layout_constraintTop_toBottomOf="@id/card_appointments"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:clickable="true"
-        android:foreground="?attr/selectableItemBackground">
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,6 +27,102 @@
             android:orientation="horizontal"
             android:padding="16dp">
 
+            <!-- Appointment Icon -->
+            <ImageView
+                android:id="@+id/icon_appointment"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_calendar"
+                android:contentDescription="Appointment Icon" />
+
+            <!-- Appointment Text -->
+            <TextView
+                android:id="@+id/tv_appointments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Appointments"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+<<<<<<< Updated upstream
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_find_clinics"
+=======
+<<<<<<< HEAD
+    <!-- Chat Panel -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_chat"
+=======
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_find_clinics"
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+<<<<<<< Updated upstream
+        android:layout_marginTop="16dp"
+=======
+<<<<<<< HEAD
+        android:layout_marginTop="8dp"
+=======
+        android:layout_marginTop="16dp"
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/card_appointments"
+        app:layout_constraintStart_toStartOf="parent"
+<<<<<<< Updated upstream
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+=======
+<<<<<<< HEAD
+        app:layout_constraintEnd_toEndOf="parent">
+=======
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+            <!-- Chat Icon -->
+            <ImageView
+                android:id="@+id/icon_chat"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_chat"
+                android:contentDescription="Chat Icon" />
+
+            <!-- Chat Text -->
+            <TextView
+                android:id="@+id/tv_chat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chat"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+=======
+>>>>>>> Stashed changes
             <ImageView
                 android:id="@+id/icon_clinic"
                 android:layout_width="24dp"
@@ -90,4 +144,8 @@
 
 
 
+<<<<<<< Updated upstream
+=======
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -68,17 +68,31 @@ public class DoctorChatActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
                 Message message = snapshot.getValue(Message.class);
-                if (message != null && message.receiverId.equals(currentUser.getUid()) && message.senderId.equals(patientId)) {
+                if (message != null &&
+                        (message.receiverId.equals(currentUser.getUid()) && message.senderId.equals(patientId)) ||
+                        (message.senderId.equals(currentUser.getUid()) && message.receiverId.equals(patientId))) {
+
                     messagesList.add(message.senderName + ": " + message.message);
                     doctorChatAdapter.notifyItemInserted(messagesList.size() - 1);
                     chatRecyclerView.smoothScrollToPosition(messagesList.size() - 1);
                 }
             }
 
-            @Override public void onChildChanged(DataSnapshot snapshot, String previousChildName) {}
-            @Override public void onChildRemoved(DataSnapshot snapshot) {}
-            @Override public void onChildMoved(DataSnapshot snapshot, String previousChildName) {}
-            @Override public void onCancelled(DatabaseError error) {}
+            @Override
+            public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot snapshot) {
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot snapshot, String previousChildName) {
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
         });
     }
 }

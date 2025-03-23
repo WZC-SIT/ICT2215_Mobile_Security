@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,6 +59,10 @@ public class PatientChatActivity extends AppCompatActivity {
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
         messageEditText = findViewById(R.id.messageEditText);
         Button sendButton = findViewById(R.id.sendButton);
+        // Call listenForMessages() here (before RecyclerView setup)
+        if (currentUser != null && doctorName != null) {
+            listenForMessages();
+        }
 
         // Set doctor name
         if (doctorName != null) {
@@ -83,14 +90,39 @@ public class PatientChatActivity extends AppCompatActivity {
             }
         });
     }
+    private void listenForMessages() {
+        if (currentUser == null || doctorName == null) return;
+
+        messagesRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
+                Message message = snapshot.getValue(Message.class);
+                String doctorId = getIntent().getStringExtra("doctor_id");
+
+                if (message != null &&
+                        (message.receiverId.equals(currentUser.getUid()) && message.senderId.equals(doctorId)) ||
+                        (message.senderId.equals(currentUser.getUid()) && message.receiverId.equals(doctorId))) {
+
+                    messagesList.add(message.senderName + ": " + message.message);
+                    patientChatAdapter.notifyItemInserted(messagesList.size() - 1);
+                    chatRecyclerView.smoothScrollToPosition(messagesList.size() - 1);
+                }
+            }
+
+            @Override public void onChildChanged(DataSnapshot snapshot, String previousChildName) {}
+            @Override public void onChildRemoved(DataSnapshot snapshot) {}
+            @Override public void onChildMoved(DataSnapshot snapshot, String previousChildName) {}
+            @Override public void onCancelled(DatabaseError error) {}
+        });
+    }
+
     private void sendMessageToFirebase(String message) {
         // Check if currentUser is null (user not logged in)
         if (currentUser != null) {
             // Create message object
             String messageId = messagesRef.push().getKey();  // Generate unique ID for the message
             String doctorId = getIntent().getStringExtra("doctor_id");
-            Message newMessage = new Message(message, currentUser.getUid(), "doctorId", currentUser.getDisplayName());
-
+            Message newMessage = new Message(message, currentUser.getUid(), doctorId, currentUser.getDisplayName());
             // Save message to Firebase under 'messages' node
             if (messageId != null) {
                 messagesRef.child(messageId).setValue(newMessage);

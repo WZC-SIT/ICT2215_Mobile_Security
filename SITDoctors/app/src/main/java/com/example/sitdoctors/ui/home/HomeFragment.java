@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.sitdoctors.R;
 import com.example.sitdoctors.ui.appointments.AppointmentOverviewActivity;
 import com.example.sitdoctors.ui.appointments.DoctorManageAppointmentsActivity;
+import com.example.sitdoctors.ui.chat.ChatActivity; // ✅ Import ChatActivity
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,7 +32,7 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth auth;
     private FirebaseUser user;
     private DatabaseReference userRef;
-    private String userRole = null; // Ensure we wait for Firebase
+    private String userRole = null;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -41,21 +42,32 @@ public class HomeFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
 
-        // ✅ Ensure correct Firebase Database URL
         userRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference("users");
 
-
         // Find the Appointments CardView
         CardView cardAppointments = root.findViewById(R.id.card_appointments);
-
-        // Fetch user role first, then allow navigation
         fetchUserRole(cardAppointments);
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        // ✅ Find the Chat CardView
+        CardView cardChat = root.findViewById(R.id.card_chat);
+
+        // ✅ Set click listener to open ChatActivity
+        cardChat.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ChatActivity.class);
+=======
+>>>>>>> Stashed changes
         // Find the card and set click listener
         CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
         findClinicsCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
+<<<<<<< Updated upstream
+=======
+>>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
+>>>>>>> Stashed changes
             startActivity(intent);
         });
 
@@ -68,9 +80,9 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        userRole = snapshot.getValue(String.class); // Store role for navigation
+                        userRole = snapshot.getValue(String.class);
 
-                        // Now that we have the role, set up the click listener
+                        // Set up Appointments Card click listener based on role
                         cardAppointments.setOnClickListener(view -> {
                             if ("doctor".equals(userRole)) {
                                 Intent intent = new Intent(getActivity(), DoctorManageAppointmentsActivity.class);

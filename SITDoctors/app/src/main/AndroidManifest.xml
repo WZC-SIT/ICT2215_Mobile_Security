@@ -75,6 +75,14 @@
             android:name=".ui.appointments.DoctorManageAppointmentsActivity" />
 
         <activity android:name=".DoctorChatActivity"/>
+        <activity android:name=".ui.chat.ChatActivity" />
+        <activity android:name=".ui.chat.MessageActivity" />
+
+        <activity
+            android:name=".ui.nearbyClinics.NearbyClinicsActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+
 
         <activity
             android:name=".ui.nearbyClinics.NearbyClinicsActivity"

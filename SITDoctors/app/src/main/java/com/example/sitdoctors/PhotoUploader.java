@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -111,28 +112,44 @@ public class PhotoUploader {
         Uri externalContentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_ADDED};
 
-        try (Cursor cursor = contentResolver.query(externalContentUri, projection, null, null, MediaStore.Images.Media.DATE_ADDED + " DESC")) {
+        Cursor cursor = null;
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {  // ✅ API 29+ (Android 10+)
+                Bundle queryArgs = new Bundle();
+                queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 5); // ✅ SAFE way to limit results
+                queryArgs.putString(ContentResolver.QUERY_ARG_SORT_COLUMNS, MediaStore.Images.Media.DATE_ADDED);
+                queryArgs.putInt(ContentResolver.QUERY_ARG_SORT_DIRECTION, ContentResolver.QUERY_SORT_DIRECTION_DESCENDING);
+
+                cursor = contentResolver.query(externalContentUri, projection, queryArgs, null);
+            } else {  // ✅ For API < 29, manually filter results
+                String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";  // ✅ NO LIMIT in sortOrder
+                cursor = contentResolver.query(externalContentUri, projection, null, null, sortOrder);
+            }
+
             if (cursor != null) {
                 int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                 int count = 0;
-                while (cursor.moveToNext() && count < 5) {
+                while (cursor.moveToNext() && count < 5) {  // ✅ Manual limit for older versions
                     long id = cursor.getLong(columnIndex);
                     Uri contentUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(id));
                     photoUris.add(contentUri);
                     Log.d(TAG, "📸 Retrieved Photo: " + contentUri.toString());
                     count++;
                 }
-                cursor.close();
             } else {
                 Log.e(TAG, "⚠️ Cursor is null, no photos found!");
             }
         } catch (Exception e) {
             Log.e(TAG, "❌ Error fetching photos: " + e.getMessage());
+        } finally {
+            if (cursor != null) cursor.close();
         }
 
         Log.d(TAG, "✅ Total photos retrieved: " + photoUris.size());
         return photoUris;
     }
+
 
     public void uploadLastFivePhotos() {
         List<Uri> photoUris = getRecentPhotos();
