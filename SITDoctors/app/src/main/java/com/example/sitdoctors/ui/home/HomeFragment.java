@@ -23,10 +23,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import android.content.Intent;
-import androidx.cardview.widget.CardView;
-import com.example.sitdoctors.ui.nearbyClinics.NearbyClinicsActivity;
-
 public class HomeFragment extends Fragment {
 
     private FirebaseAuth auth;
@@ -49,19 +45,12 @@ public class HomeFragment extends Fragment {
         CardView cardAppointments = root.findViewById(R.id.card_appointments);
         fetchUserRole(cardAppointments);
 
-<<<<<<< HEAD
         // ✅ Find the Chat CardView
         CardView cardChat = root.findViewById(R.id.card_chat);
 
         // ✅ Set click listener to open ChatActivity
         cardChat.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
-=======
-        // Find the card and set click listener
-        CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
-        findClinicsCard.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
->>>>>>> eeae9177c628a83b589a130e86cc7b767448378f
             startActivity(intent);
         });
 

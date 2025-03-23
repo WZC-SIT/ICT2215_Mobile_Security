@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -105,6 +106,7 @@ public class ChatActivity extends AppCompatActivity {
         userUids.clear();
 
         final String doctorUid = currentUser.getUid();
+        final HashSet<String> seenUids = new HashSet<>();
 
         messagesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -114,16 +116,19 @@ public class ChatActivity extends AppCompatActivity {
                     if (roomId != null && roomId.contains(doctorUid)) {
                         for (DataSnapshot msgSnap : roomSnap.getChildren()) {
                             String senderUid = msgSnap.child("sender").getValue(String.class);
-                            if (senderUid != null && !senderUid.equals(doctorUid) && !userUids.contains(senderUid)) {
-                                // Add patient info once
+                            if (senderUid != null && !senderUid.equals(doctorUid) && !seenUids.contains(senderUid)) {
+                                seenUids.add(senderUid);  // ✅ Mark as seen early
+
                                 usersRef.child(senderUid).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot patientSnapshot) {
                                         String name = patientSnapshot.child("name").getValue(String.class);
                                         String email = patientSnapshot.child("email").getValue(String.class);
-                                        userList.add(name + " (" + email + ")");
-                                        userUids.add(senderUid);
-                                        adapter.notifyDataSetChanged();
+                                        if (name != null && email != null) {
+                                            userList.add(name + " (" + email + ")");
+                                            userUids.add(senderUid);
+                                            adapter.notifyDataSetChanged();
+                                        }
                                     }
 
                                     @Override
@@ -136,12 +141,11 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
 
-                if (userUids.isEmpty()) {
-                    userList.clear(); // clear any previous text like "No patients..."
+                if (seenUids.isEmpty()) {
+                    userList.clear();
                     userList.add("No patients have messaged you yet.");
                     adapter.notifyDataSetChanged();
                 }
-
             }
 
             @Override
@@ -150,4 +154,6 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
     }
+
 }
+
