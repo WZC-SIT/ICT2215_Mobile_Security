@@ -54,6 +54,15 @@ public class NearbyClinicsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nearby_clinics);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("Nearby Clinics");
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         databaseRef = FirebaseDatabase.getInstance().getReference("locations");
 
@@ -67,38 +76,6 @@ public class NearbyClinicsActivity extends AppCompatActivity {
         GeoPoint singapore = new GeoPoint(1.3521, 103.8198);
         mapView.getController().setZoom(12.0);
         mapView.getController().setCenter(singapore);
-
-//        List<GeoPoint> clinicLocations = Arrays.asList(
-//                new GeoPoint(1.3000, 103.8000), // Kallang
-//                new GeoPoint(1.3000, 103.9000), // Parkway
-//                new GeoPoint(1.3500, 103.8500), // Pek Kio
-//                new GeoPoint(1.4300, 103.7700), // Woodlands
-//                new GeoPoint(1.3000, 103.8600), // Beach Rd
-//                new GeoPoint(1.3200, 103.9100), // Cereza
-//                new GeoPoint(1.3300, 103.8900), // Grantral
-//                new GeoPoint(1.2900, 103.8600), // Suntec
-//                new GeoPoint(1.3800, 103.7600), // Choa Chu Kang
-//                new GeoPoint(1.4300, 103.8300), // Yishun Grove
-//                new GeoPoint(1.3400, 103.9600), // Simei
-//                new GeoPoint(1.3700, 103.8400), // Ang Mo Kio
-//                new GeoPoint(1.4100, 103.8200), // Sembawang
-//                new GeoPoint(1.2950, 103.8500), // Tanjong Pagar
-//                new GeoPoint(1.3150, 103.7650), // Clementi
-//                new GeoPoint(1.3700, 103.7600), // Bukit Panjang
-//                new GeoPoint(1.3100, 103.7900), // Bukit Timah
-//                new GeoPoint(1.3500, 103.8200), // Toa Payoh
-//                new GeoPoint(1.3600, 103.9100), // Hougang
-//                new GeoPoint(1.3000, 103.7500)  // West Coast
-//        );
-//
-//        for (GeoPoint point : clinicLocations) {
-//            Marker marker = new Marker(mapView);
-//            marker.setPosition(point);
-//            marker.setTitle("Clinic Location");
-//            marker.setIcon(getResources().getDrawable(org.osmdroid.library.R.drawable.marker_default));
-//            mapView.getOverlays().add(marker);
-//        }
-//        mapView.invalidate();
 
         checkLocationPermission();
     }
