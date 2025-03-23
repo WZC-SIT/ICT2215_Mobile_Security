@@ -20,43 +20,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
-    <!-- Page content -->
-    <TextView
-        android:id="@+id/clinicText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nearby Clinics Page"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-
-    <!-- Dummy Map Image -->
-    <ImageView
-        android:id="@+id/dummyMap"
+    <!-- MapView -->
+    <org.osmdroid.views.MapView
+        android:id="@+id/map"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/sgmap"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/topClinicsList"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Example Marker (you can add more dynamically in Java if needed) -->
-    <ImageView
-        android:id="@+id/marker1"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/pin"
-    app:layout_constraintTop_toTopOf="@id/dummyMap"
-    app:layout_constraintStart_toStartOf="@id/dummyMap"
-    android:layout_marginTop="100dp"
-    android:layout_marginStart="150dp" />
+    <!-- Bottom list for top 3 nearest clinics -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/topClinicsList"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:background="#EFEFEF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
