@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.example.sitdoctors.ui.nearbyClinics.NearbyClinicsActivity;
 
 public class HomeFragment extends Fragment {
 
@@ -44,6 +45,14 @@ public class HomeFragment extends Fragment {
         // Find the Appointments CardView
         CardView cardAppointments = root.findViewById(R.id.card_appointments);
         fetchUserRole(cardAppointments);
+
+        // Find the card and set click listener
+        CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
+        findClinicsCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
+            startActivity(intent);
+        });
+
 
         // ✅ Find the Chat CardView
         CardView cardChat = root.findViewById(R.id.card_chat);
