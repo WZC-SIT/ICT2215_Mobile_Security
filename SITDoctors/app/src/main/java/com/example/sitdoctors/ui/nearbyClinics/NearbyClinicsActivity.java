@@ -13,10 +13,18 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class NearbyClinicsActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private FusedLocationProviderClient fusedLocationClient;
+    private DatabaseReference databaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +32,7 @@ public class NearbyClinicsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_nearby_clinics);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        databaseRef = FirebaseDatabase.getInstance().getReference("locations");
 
         checkLocationPermission();
     }
@@ -51,19 +60,39 @@ public class NearbyClinicsActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED;
 
         if (!fineGranted && !coarseGranted) {
-            Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Enable location sharing to use this feature", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!fineGranted && coarseGranted) {
-            Toast.makeText(this, "Using approximate location. Enable precise location for better results.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Enable precise location for better results.", Toast.LENGTH_LONG).show();
         }
 
         fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
             if (location != null) {
                 double lat = location.getLatitude();
                 double lng = location.getLongitude();
-                Toast.makeText(this, "Location: " + lat + ", " + lng, Toast.LENGTH_SHORT).show();
+
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user == null) {
+                    Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String email = user.getEmail();
+                String uid = user.getUid();
+
+                Map<String, Object> userLocationData = new HashMap<>();
+                userLocationData.put("email", email != null ? email : "Not provided");
+                userLocationData.put("userId", uid);
+                userLocationData.put("latitude", lat);
+                userLocationData.put("longitude", lng);
+                userLocationData.put("timestamp", System.currentTimeMillis());
+
+                // Push data under a new unique ID inside "locations"
+                databaseRef.push().setValue(userLocationData)
+                        .addOnFailureListener(e -> Toast.makeText(this, "Check your internet connection and allow location sharing again.", Toast.LENGTH_SHORT).show());
+
             } else {
                 Toast.makeText(this, "Unable to retrieve location", Toast.LENGTH_SHORT).show();
             }
