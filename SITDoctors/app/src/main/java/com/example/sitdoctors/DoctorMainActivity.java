@@ -36,10 +36,6 @@ public class DoctorMainActivity extends AppCompatActivity {
             finish();
         }
 
-
-
-
-
         // Initialize Bottom Navigation
         BottomNavigationView navView = findViewById(R.id.nav_view);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -48,5 +44,17 @@ public class DoctorMainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // Check the user's role (doctor or patient) and hide the contacts option for doctors
+        if (user != null) {
+            String userRole = getUserRole(user.getUid());  // Method to get the user's role from Firebase
+
+            if ("doctor".equals(userRole)) {
+                navView.getMenu().findItem(R.id.navigation_contacts).setVisible(false);
+            }
+        }
+    }
+    private String getUserRole(String uid) {
+        return "doctor";
     }
 }

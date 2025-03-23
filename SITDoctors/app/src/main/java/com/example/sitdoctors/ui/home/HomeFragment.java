@@ -57,11 +57,21 @@ public class HomeFragment extends Fragment {
         // ✅ Find the Chat CardView
         CardView cardChat = root.findViewById(R.id.card_chat);
 
-        // ✅ Set click listener to open ChatActivity
-        cardChat.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), ChatActivity.class);
-            startActivity(intent);
-        });
+        // Set visibility for the chat card based on user role
+        if (cardChat != null) {
+            if ("doctor".equals(userRole)) {
+                // Allow chat for doctors (card visible)
+                cardChat.setVisibility(View.VISIBLE);
+
+                cardChat.setOnClickListener(view -> {
+                    Intent intent = new Intent(getActivity(), ChatActivity.class);
+                    startActivity(intent);
+                });
+            } else {
+                // Remove chat card for patients (card hidden)
+                cardChat.setVisibility(View.GONE);
+            }
+        }
 
         return root;
     }
