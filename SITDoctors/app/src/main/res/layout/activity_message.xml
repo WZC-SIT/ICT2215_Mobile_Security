@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp"
     android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         android:id="@+id/chat_with_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chat with ..."
+        android:text=""
         android:textSize="20sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
@@ -33,24 +34,41 @@
             android:layout_height="wrap_content" />
     </ScrollView>
 
-    <!-- Message input and send button -->
+    <!-- Message input and action buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp">
+        android:paddingTop="8dp"
+        android:gravity="center_vertical">
 
+        <!-- Input Field -->
         <EditText
             android:id="@+id/input_message"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Type your message..." />
+            android:hint="Type your message..."
+            android:background="@drawable/input_bg"
+            android:padding="10dp"
+            android:textSize="16sp"/>
 
+        <!-- Send Button -->
         <Button
             android:id="@+id/send_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:text="Send"
+            android:layout_marginStart="8dp"/>
+
+        <ImageButton
+            android:id="@+id/ic_attach_files"
+            android:layout_width="45dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_attach_files"
+            android:layout_marginStart="8dp"
+            app:tint="@android:color/white"
+            android:backgroundTint="?attr/colorPrimaryVariant"
+            android:background="@drawable/rounded_button" />
     </LinearLayout>
 </LinearLayout>
