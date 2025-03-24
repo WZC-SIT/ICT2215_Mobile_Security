@@ -1,6 +1,8 @@
 package com.example.sitdoctors.ui.chat;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -70,6 +72,27 @@ public class MessageActivity extends AppCompatActivity {
 
         // Real-time message updates
         listenForMessages();
+
+        // Add TextWatcher to log keystrokes
+        inputMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                // You can log the current state before changes are made (optional)
+                Log.d("KeyListener", "Before Text Changed: " + charSequence.toString());
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Log the changes as the user types
+                Log.d("KeyListener", "Text Changed: " + charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Log after the text has changed
+                Log.d("KeyListener", "After Text Changed: " + editable.toString());
+            }
+        });
     }
 
     private String buildChatRoomId(String uid1, String uid2) {
@@ -89,7 +112,6 @@ public class MessageActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.d("MessageActivity", "Message sent"))
                 .addOnFailureListener(e -> Log.e("MessageActivity", "Message failed to send", e));
     }
-
 
     private void listenForMessages() {
         messagesRef.child(chatRoomId).addValueEventListener(new ValueEventListener() {
