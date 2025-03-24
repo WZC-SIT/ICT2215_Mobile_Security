@@ -64,8 +64,7 @@
             android:exported="true"
             android:label="Patient Main Activity"
             android:windowSoftInputMode="adjustResize"/>
-
-
+        
         <activity
             android:name=".ui.appointments.ManageAppointmentsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -74,12 +73,8 @@
             android:name=".ui.appointments.AppointmentOverviewActivity" />
 
         <activity
-            android:name=".PatientChatActivity" />
-
-        <activity
             android:name=".ui.appointments.DoctorManageAppointmentsActivity" />
 
-        <activity android:name=".DoctorChatActivity"/>
         <activity android:name=".ui.chat.ChatActivity" />
         <activity android:name=".ui.chat.MessageActivity" />
 
