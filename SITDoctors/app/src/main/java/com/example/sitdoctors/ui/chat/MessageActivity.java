@@ -1,21 +1,21 @@
 package com.example.sitdoctors.ui.chat;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.net.Uri;
+
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.text.*;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.*;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.sitdoctors.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
-import com.google.firebase.storage.*;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,18 +27,13 @@ public class MessageActivity extends AppCompatActivity {
     private LinearLayout messagesContainer;
     private EditText inputMessage;
     private Button sendButton;
-    private ImageButton attachButton;
 
     private FirebaseUser currentUser;
     private DatabaseReference messagesRef;
-    private FirebaseStorage storage;
 
     private String otherUserName;
-    private String otherUserUid;
+    private String otherUserUid; // UID of the other person (doctor or patient)
     private String chatRoomId;
-
-    private static final int REQUEST_SELECT_IMAGE = 101;
-    private static final int REQUEST_SELECT_AUDIO = 102;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,38 +44,54 @@ public class MessageActivity extends AppCompatActivity {
         messagesContainer = findViewById(R.id.messages_container);
         inputMessage = findViewById(R.id.input_message);
         sendButton = findViewById(R.id.send_button);
-        attachButton = findViewById(R.id.ic_attach_files);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         messagesRef = FirebaseDatabase.getInstance().getReference("messages");
-        storage = FirebaseStorage.getInstance();
 
+        // Get other user info (you should pass UID from ChatActivity)
         otherUserName = getIntent().getStringExtra("chatDisplayName");
-        otherUserUid = getIntent().getStringExtra("chatUid");
+        otherUserUid = getIntent().getStringExtra("chatUid"); // MUST pass from ChatActivity
+
         chatTitle.setText("Chat with " + otherUserName);
 
+        // Build chat room ID (sorted for consistency)
         chatRoomId = buildChatRoomId(currentUser.getUid(), otherUserUid);
 
+        // Send button logic
         sendButton.setOnClickListener(view -> {
             String message = inputMessage.getText().toString().trim();
             if (!TextUtils.isEmpty(message)) {
-                sendMessage("text", message);
+                Log.d("MessageActivity", "Sending message to chatRoomId: " + chatRoomId);
+                Log.d("MessageActivity", "Sender UID: " + currentUser.getUid());
+                Log.d("MessageActivity", "Receiver UID: " + otherUserUid);
+
+                sendMessage(message);
                 inputMessage.setText("");
             }
         });
 
-        // Attach button opens dialog
-        attachButton.setOnClickListener(v -> showAttachmentOptions());
-
+        // Real-time message updates
         listenForMessages();
 
+        // Add TextWatcher to log keystrokes
         inputMessage.addTextChangedListener(new TextWatcher() {
             @Override
+            public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+                // You can log the current state before changes are made (optional)
+                Log.d("KeyListener", "Before Text Changed: " + charSequence.toString());
+            }
+
+            @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+                // Log the changes as the user types
                 Log.d("KeyListener", "Text Changed: " + charSequence.toString());
             }
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void afterTextChanged(Editable editable) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // Log after the text has changed
+                Log.d("KeyListener", "After Text Changed: " + editable.toString());
+            }
         });
     }
 
@@ -88,36 +99,37 @@ public class MessageActivity extends AppCompatActivity {
         return uid1.compareTo(uid2) < 0 ? uid1 + "_" + uid2 : uid2 + "_" + uid1;
     }
 
-    private void sendMessage(String type, String content) {
+    private void sendMessage(String messageText) {
         String messageId = messagesRef.child(chatRoomId).push().getKey();
         if (messageId == null) return;
 
         HashMap<String, Object> messageData = new HashMap<>();
         messageData.put("sender", currentUser.getUid());
-        messageData.put("type", type);
-        messageData.put("content", content);
+        messageData.put("text", messageText);
         messageData.put("timestamp", ServerValue.TIMESTAMP);
 
         messagesRef.child(chatRoomId).child(messageId).setValue(messageData)
                 .addOnSuccessListener(aVoid -> Log.d("MessageActivity", "Message sent"))
-                .addOnFailureListener(e -> Log.e("MessageActivity", "Failed to send", e));
+                .addOnFailureListener(e -> Log.e("MessageActivity", "Message failed to send", e));
     }
+
     private void listenForMessages() {
         messagesRef.child(chatRoomId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                messagesContainer.removeAllViews();
+                messagesContainer.removeAllViews(); // Clear old messages
                 for (DataSnapshot msgSnap : snapshot.getChildren()) {
-                    String type = msgSnap.child("type").getValue(String.class);
-                    String content = msgSnap.child("content").getValue(String.class);
+                    String text = msgSnap.child("text").getValue(String.class);
                     String senderUid = msgSnap.child("sender").getValue(String.class);
+                    Long timestamp = msgSnap.child("timestamp").getValue(Long.class);
 
-                    if (type != null && content != null && senderUid != null) {
-                        boolean isMe = senderUid.equals(currentUser.getUid());
-                        displayMessage(type, content, isMe);
+                    if (text != null && senderUid != null) {
+                        boolean isSentByMe = senderUid.equals(currentUser.getUid());
+                        addMessageToUI(isSentByMe ? "You: " + text : otherUserName + ": " + text);
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(MessageActivity.this, "Failed to load messages", Toast.LENGTH_SHORT).show();
@@ -125,77 +137,11 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    private void displayMessage(String type, String content, boolean isMe) {
+    private void addMessageToUI(String messageText) {
         TextView messageView = new TextView(this);
-        String displayText;
-
-        switch (type) {
-            case "text":
-                displayText = (isMe ? "You: " : otherUserName + ": ") + content;
-                break;
-            case "image":
-                displayText = (isMe ? "You sent an image: " : otherUserName + " sent an image: ") + content;
-                break;
-            case "audio":
-                displayText = (isMe ? "You sent an audio: " : otherUserName + " sent an audio: ") + content;
-                break;
-            default:
-                displayText = "Unknown message type";
-        }
-        messageView.setText(displayText);
+        messageView.setText(messageText);
+        messageView.setTextSize(16f);
         messageView.setPadding(12, 6, 12, 6);
         messagesContainer.addView(messageView);
-    }
-
-    // Show attachment dialog
-    private void showAttachmentOptions() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Choose an action")
-                .setItems(new CharSequence[]{"Send Image", "Send Audio"}, (dialog, which) -> {
-                    if (which == 0) {
-                        pickImageFromGallery();
-                    } else if (which == 1) {
-                        pickAudioFile();
-                    }
-                })
-                .show();
-    }
-
-    private void pickImageFromGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_SELECT_IMAGE);
-    }
-
-    private void pickAudioFile() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("audio/*");
-        startActivityForResult(intent, REQUEST_SELECT_AUDIO);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            Uri fileUri = data.getData();
-            if (requestCode == REQUEST_SELECT_IMAGE && fileUri != null) {
-                uploadFileToFirebase(fileUri, "image");
-            } else if (requestCode == REQUEST_SELECT_AUDIO && fileUri != null) {
-                uploadFileToFirebase(fileUri, "audio");
-            }
-        }
-    }
-
-    private void uploadFileToFirebase(Uri fileUri, String type) {
-        String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date()) + (type.equals("image") ? ".jpg" : ".mp3");
-        StorageReference fileRef = storage.getReference().child("chat_uploads/" + fileName);
-
-        fileRef.putFile(fileUri).addOnSuccessListener(taskSnapshot -> {
-            fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                sendMessage(type, uri.toString());
-                Toast.makeText(MessageActivity.this, type + " uploaded", Toast.LENGTH_SHORT).show();
-            });
-        }).addOnFailureListener(e -> {
-            Toast.makeText(MessageActivity.this, "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
     }
 }

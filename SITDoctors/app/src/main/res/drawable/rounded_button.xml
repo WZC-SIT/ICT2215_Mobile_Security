@@ -2,8 +2,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="18dp"/>  <!-- Rounded corners -->
-            <solid android:color="@color/purple_toolbar"/>  <!-- Button color -->
+            <corners android:radius="20dp"/>  <!-- Rounded corners -->
+            <solid android:color="@color/purple_500"/>  <!-- Button color -->
             <padding android:left="8dp" android:right="8dp" android:top="4dp" android:bottom="4dp"/>
         </shape>
     </item>
