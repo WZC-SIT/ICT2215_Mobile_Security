@@ -16,7 +16,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -81,7 +80,11 @@
             android:name=".ui.nearbyClinics.NearbyClinicsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-
+        <!-- Doctor Profile Activity -->
+        <activity
+            android:name=".DoctorProfileActivity"
+            android:exported="true"
+            android:label="Doctor Profile" />
 
     </application>
 
