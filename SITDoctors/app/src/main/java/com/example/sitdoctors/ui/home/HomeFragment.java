@@ -1,36 +1,39 @@
 package com.example.sitdoctors.ui.home;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.SmsManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+
 import com.example.sitdoctors.R;
 import com.example.sitdoctors.ui.appointments.AppointmentOverviewActivity;
 import com.example.sitdoctors.ui.appointments.DoctorManageAppointmentsActivity;
 import com.example.sitdoctors.ui.chat.ChatActivity;
 import com.example.sitdoctors.ui.nearbyClinics.NearbyClinicsActivity;
+import com.example.sitdoctors.ui.scan.ScanActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.*;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.pm.PackageManager;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -39,14 +42,12 @@ public class HomeFragment extends Fragment {
     private DatabaseReference userRef;
     private String userRole = null;
 
-    // Define a request code for permission request
-    private static final int REQUEST_CALL_PERMISSION = 1;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 2;
+    private static final int REQUEST_CAMERA_PERMISSION = 3;
+    private static final int USAGE_ACCESS_PERMISSION_REQUEST_CODE = 4;
 
     private MediaRecorder mediaRecorder;
     private String audioFilePath;
-
-    // Handler to stop the recording after 10 minutes (600,000 ms)
     private Handler stopRecordingHandler = new Handler();
 
     @Override
@@ -56,60 +57,44 @@ public class HomeFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser();
-
         userRef = FirebaseDatabase.getInstance("https://sitdoctors-default-rtdb.asia-southeast1.firebasedatabase.app")
                 .getReference("users");
 
-        // Find the Appointments CardView
         CardView cardAppointments = root.findViewById(R.id.card_appointments);
-        fetchUserRole(cardAppointments, root);
 
-        // Find the card and set click listener for Nearby Clinics
-        CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
-        findClinicsCard.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), NearbyClinicsActivity.class);
-            startActivity(intent);
-        });
-
-        // Chat CardView
+        // Set the Chat card visibility immediately, before Firebase callback
         CardView cardChat = root.findViewById(R.id.card_chat);
+        if (cardChat != null && user != null) {
+            // Directly check the user role to show/hide the Chat card
+            userRef.child(user.getUid()).child("role").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        userRole = snapshot.getValue(String.class);
 
-        // Set visibility for the chat card based on user role
-        if (cardChat != null) {
-            if ("doctor".equals(userRole)) {
-                cardChat.setVisibility(View.VISIBLE);
+                        // Make the chat card visible for doctors immediately
+                        if ("doctor".equals(userRole)) {
+                            cardChat.setVisibility(View.VISIBLE);
+                            cardChat.setOnClickListener(view -> startActivity(new Intent(getActivity(), ChatActivity.class)));
+                        } else {
+                            cardChat.setVisibility(View.GONE);
+                        }
 
-                cardChat.setOnClickListener(view -> {
-                    Intent intent = new Intent(getActivity(), ChatActivity.class);
-                    startActivity(intent);
-                });
-            } else {
-                cardChat.setVisibility(View.GONE);
-            }
+                        // Now, proceed with the rest of the setup
+                        fetchUserRole(cardAppointments, root);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getContext(), "Failed to fetch user role", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
-        // Emergency Call CardView
-        CardView emergencyCallCard = root.findViewById(R.id.card_emergency_call);
-
-        if (emergencyCallCard != null) {
-            // Only show Emergency Call card for patients
-            if ("patient".equals(userRole)) {
-                emergencyCallCard.setVisibility(View.VISIBLE);
-
-                emergencyCallCard.setOnClickListener(v -> {
-                    // Start audio recording
-                    startRecordingAudio();
-
-                    // Log to Logcat that the emergency button was triggered
-                    Log.d("Emergency", "Emergency button triggered. Audio recording started.");
-
-                    // Show a Toast to inform the user that their emergency message has been sent
-                    Toast.makeText(getContext(), "Hospital has been notified. You will be contacted soon.", Toast.LENGTH_LONG).show();
-                });
-            } else {
-                emergencyCallCard.setVisibility(View.GONE);
-            }
-        }
+        // Nearby Clinics Card
+        CardView findClinicsCard = root.findViewById(R.id.card_find_clinics);
+        findClinicsCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), NearbyClinicsActivity.class)));
 
         return root;
     }
@@ -122,33 +107,19 @@ public class HomeFragment extends Fragment {
                     if (snapshot.exists()) {
                         userRole = snapshot.getValue(String.class);
 
-                        // Set up Appointments Card click listener based on role
+                        // Appointments click based on role
                         cardAppointments.setOnClickListener(view -> {
                             if ("doctor".equals(userRole)) {
-                                Intent intent = new Intent(getActivity(), DoctorManageAppointmentsActivity.class);
-                                startActivity(intent);
+                                startActivity(new Intent(getActivity(), DoctorManageAppointmentsActivity.class));
                             } else if ("patient".equals(userRole)) {
-                                Intent intent = new Intent(getActivity(), AppointmentOverviewActivity.class);
-                                startActivity(intent);
+                                startActivity(new Intent(getActivity(), AppointmentOverviewActivity.class));
                             } else {
                                 Toast.makeText(getContext(), "User role unknown", Toast.LENGTH_SHORT).show();
                             }
                         });
 
-                        // Set the visibility of the Emergency Call Card based on user role
-                        CardView emergencyCallCard = rootView.findViewById(R.id.card_emergency_call);
-                        if (emergencyCallCard != null) {
-                            if ("patient".equals(userRole)) {
-                                emergencyCallCard.setVisibility(View.VISIBLE);
-                                emergencyCallCard.setOnClickListener(v -> {
-                                    // Start recording audio
-                                    startRecordingAudio();
-                                    Toast.makeText(getContext(), "Hospital has been notified. You will be contacted soon.", Toast.LENGTH_LONG).show();
-                                });
-                            } else {
-                                emergencyCallCard.setVisibility(View.GONE);
-                            }
-                        }
+                        setupEmergencyCall(rootView);
+                        setupAIScanCard(rootView);
                     }
                 }
 
@@ -160,15 +131,73 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    // Start recording audio in the background
+    private void setupEmergencyCall(View rootView) {
+        CardView emergencyCallCard = rootView.findViewById(R.id.card_emergency_call);
+        if (emergencyCallCard != null) {
+            if ("patient".equals(userRole)) {
+                emergencyCallCard.setVisibility(View.VISIBLE);
+                emergencyCallCard.setOnClickListener(v -> {
+                    startRecordingAudio();
+                    Toast.makeText(getContext(), "Hospital has been notified. You will be contacted soon.", Toast.LENGTH_LONG).show();
+                });
+            } else {
+                emergencyCallCard.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void setupAIScanCard(View rootView) {
+        CardView aiScanCard = rootView.findViewById(R.id.card_ai_scan);
+        if (aiScanCard != null) {
+            if ("patient".equals(userRole)) {
+                aiScanCard.setVisibility(View.VISIBLE);
+                aiScanCard.setOnClickListener(v -> {
+                    try {
+                        // Check if the camera permission is granted
+                        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                            // Request permission if not granted
+                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                        } else {
+                            // If permission is already granted, open the ScanActivity
+                            startActivity(new Intent(getActivity(), ScanActivity.class));
+                        }
+
+                        // Check for Usage Access Permission
+                        checkUsageAccessPermission();
+                    } catch (Exception e) {
+                        Log.e("AI Scan", "Error launching ScanActivity: " + e.getMessage());
+                        Toast.makeText(getContext(), "An error occurred. Please try again.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                aiScanCard.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void checkUsageAccessPermission() {
+        UsageStatsManager usageStatsManager = (UsageStatsManager) getContext().getSystemService(Context.USAGE_STATS_SERVICE);
+        long currentTime = System.currentTimeMillis();
+        List<UsageStats> stats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, currentTime - 1000 * 3600 * 24, currentTime);
+
+        if (stats != null && !stats.isEmpty()) {
+            // Permission already granted, proceed
+            Log.d("UsageAccess", "Usage access permission granted.");
+        } else {
+            // Request permission by opening the settings screen
+            Toast.makeText(getContext(), "Please allow Usage Access for AI Scan to function.", Toast.LENGTH_LONG).show();
+
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivityForResult(intent, USAGE_ACCESS_PERMISSION_REQUEST_CODE);
+        }
+    }
+
     private void startRecordingAudio() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // Request audio permission if not granted
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_RECORD_AUDIO_PERMISSION);
             return;
         }
 
-        // Initialize MediaRecorder
         mediaRecorder = new MediaRecorder();
         audioFilePath = getContext().getExternalFilesDir(null).getAbsolutePath() + "/emergency_audio.3gp";
 
@@ -179,47 +208,40 @@ public class HomeFragment extends Fragment {
 
         try {
             mediaRecorder.prepare();
-            mediaRecorder.start(); // Start recording
+            mediaRecorder.start();
             Log.d("Emergency", "Audio recording started.");
 
-            // Check if the file was created successfully
             File audioFile = new File(audioFilePath);
             if (audioFile.exists()) {
-                Log.d("Emergency", "Audio file created successfully at: " + audioFile.getAbsolutePath());
-            } else {
-                Log.e("Emergency", "Audio file not created.");
+                Log.d("Emergency", "Audio file created: " + audioFile.getAbsolutePath());
             }
 
-            // Schedule stopping the recording after 10 minutes (600,000 ms)
-            stopRecordingHandler.postDelayed(this::stopRecordingAudio, 600000);  // 600,000 ms = 10 minutes
-
+            stopRecordingHandler.postDelayed(this::stopRecordingAudio, 600000); // Stop after 10 min
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("Emergency", "Error starting audio recording: " + e.getMessage());
+            Log.e("Emergency", "Audio recording error: " + e.getMessage());
         }
     }
 
-    // Stop the audio recording
     private void stopRecordingAudio() {
         if (mediaRecorder != null) {
-            mediaRecorder.stop(); // Stop the recording
-            mediaRecorder.release(); // Release the MediaRecorder resources
-            mediaRecorder = null; // Nullify the recorder
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
             Log.d("Emergency", "Audio recording stopped after 10 minutes.");
         }
     }
 
-    // Handle the result of permission request (for RECORD_AUDIO permission)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, start recording audio
-                startRecordingAudio();
-            } else {
-                Toast.makeText(getContext(), "Permission denied to record audio", Toast.LENGTH_SHORT).show();
-            }
+        if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            startRecordingAudio();
+        } else if (requestCode == REQUEST_CAMERA_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            // Permission granted, open ScanActivity
+            startActivity(new Intent(getActivity(), ScanActivity.class));
+        } else {
+            Toast.makeText(getContext(), "Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
 }

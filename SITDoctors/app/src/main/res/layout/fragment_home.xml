@@ -175,4 +175,48 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
+    <!-- AI Body Temperature Scan Panel -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_ai_scan"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/card_emergency_call"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <!-- AI Scan Icon -->
+            <ImageView
+                android:id="@+id/icon_ai_scan"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_temperature_scan"
+                android:contentDescription="AI Scan Icon"
+                android:layout_marginEnd="8dp" />
+
+            <!-- AI Scan Text -->
+            <TextView
+                android:id="@+id/tv_ai_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI Body Temperature Scan (Beta)"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
