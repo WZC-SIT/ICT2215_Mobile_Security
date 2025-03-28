@@ -109,8 +109,22 @@ public class Register extends AppCompatActivity {
             showToast("Enter Age");
             return false;
         }
+        try {
+            int ageValue = Integer.parseInt(age);
+            if (ageValue <= 0 || ageValue > 120) {
+                showToast("Enter a valid age (1-120)");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            showToast("Age must be a number");
+            return false;
+        }
         if (TextUtils.isEmpty(phone)) {
             showToast("Enter Phone Number");
+            return false;
+        }
+        if (!phone.matches("^[89]\\d{7}$")) {
+            showToast("Enter a valid Singapore phone number (starts with 8 or 9)");
             return false;
         }
         if (TextUtils.isEmpty(address)) {
@@ -119,6 +133,7 @@ public class Register extends AppCompatActivity {
         }
         return true;
     }
+
 
     // Register User with Firebase
     private void registerUser(String email, String password, String name, String age, String phone, String address) {
