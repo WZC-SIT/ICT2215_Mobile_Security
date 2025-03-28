@@ -40,6 +40,18 @@
         android:orientation="horizontal"
         android:layout_marginTop="8dp">
 
+        <!-- Image Picker Button -->
+        <ImageButton
+            android:id="@+id/image_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="@android:color/transparent"
+            android:contentDescription="Send Image"
+            android:layout_gravity="center_vertical"
+            android:padding="8dp" />
+
+        <!-- Message Input -->
         <EditText
             android:id="@+id/input_message"
             android:layout_weight="1"
@@ -47,6 +59,7 @@
             android:layout_height="wrap_content"
             android:hint="Type your message..." />
 
+        <!-- Send Button -->
         <Button
             android:id="@+id/send_button"
             android:layout_width="wrap_content"
