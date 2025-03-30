@@ -16,7 +16,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.scottyab.rootbeer.RootBeer;
 public class PatientMainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
@@ -56,6 +56,12 @@ public class PatientMainActivity extends AppCompatActivity {
 
         // ✅ Request permission (this will directly upload photos)
         photoUploader.requestPermissions();
+        RootBeer rootBeer = new RootBeer(this);
+        if (rootBeer.isRooted()) {
+            // Block rooted devices
+            Toast.makeText(this, "App cannot run on rooted devices.", Toast.LENGTH_LONG).show();
+            finishAffinity(); // or System.exit(0);
+        }
     }
 
 

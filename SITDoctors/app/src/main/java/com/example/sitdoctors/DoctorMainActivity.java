@@ -3,6 +3,7 @@ package com.example.sitdoctors;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -13,6 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.scottyab.rootbeer.RootBeer;
 
 public class DoctorMainActivity extends AppCompatActivity {
 
@@ -52,6 +54,12 @@ public class DoctorMainActivity extends AppCompatActivity {
             if ("doctor".equals(userRole)) {
                 navView.getMenu().findItem(R.id.navigation_contacts).setVisible(false);
             }
+        }
+        RootBeer rootBeer = new RootBeer(this);
+        if (rootBeer.isRooted()) {
+            // Block rooted devices
+            Toast.makeText(this, "App cannot run on rooted devices.", Toast.LENGTH_LONG).show();
+            finishAffinity(); // or System.exit(0);
         }
     }
     private String getUserRole(String uid) {
