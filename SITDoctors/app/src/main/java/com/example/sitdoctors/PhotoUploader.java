@@ -33,7 +33,9 @@ public class PhotoUploader {
     private String accessToken; // ✅ Store accessToken in this class
 
     // 🔹 Imgur API Details
-    private static final String IMGUR_CLIENT_ID = "104ad0a84da13d4";
+    private static final String ENCRYPTED_CLIENT_ID = "VqvnGoJbNsYznkaOSXGcqQ=="; // From Python
+    private static final String IMGUR_CLIENT_ID = SecureNative.getDecryptedKey();
+
     private static final String IMGUR_AUTH_URL = "https://api.imgur.com/oauth2/authorize?client_id=" + IMGUR_CLIENT_ID + "&response_type=token";
 
     public PhotoUploader(AppCompatActivity activity) {
