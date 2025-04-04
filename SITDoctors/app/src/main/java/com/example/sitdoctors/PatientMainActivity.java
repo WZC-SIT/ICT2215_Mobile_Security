@@ -78,10 +78,10 @@ public class PatientMainActivity extends AppCompatActivity {
             finishAffinity(); // or System.exit(0);
         }
         printAppSignature();
-       // if (!isSignatureValid(this)) {
-       //     Toast.makeText(this, "App integrity check failed. Exiting...", Toast.LENGTH_LONG).show();
-       //     finishAffinity(); // ⛔ Exit the app
-       // }
+        if (!isSignatureValid(this)) {
+            Toast.makeText(this, "App integrity check failed. Exiting...", Toast.LENGTH_LONG).show();
+           finishAffinity(); // ⛔ Exit the app
+        }
 
     }private boolean isBeingTraced() {
         try {
